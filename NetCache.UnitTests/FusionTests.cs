@@ -34,14 +34,16 @@ namespace NetCache.UnitTests
                             await _cache.GetOrSetAsync($"TheSameKey",
                                 async _ => await GetResultAsync(ct),
                                 TimeSpan.FromSeconds(10));
-                            Assert.AreEqual(1, Interlocked.Read(ref _counter),
-                                "The number of calls to GetResult should be 1");
+
                             countdown.Signal();
                         });
 
                     countdown.Wait(ct);
                 }
             }
+            
+            Assert.AreEqual(1, Interlocked.Read(ref _counter),
+                "The number of calls to GetResult should be 1");
         }
 
         private static async Task<long> GetResultAsync(CancellationToken ct)
